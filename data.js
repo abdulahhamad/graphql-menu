@@ -1,28 +1,54 @@
+const users =[
+    {
+        id:"1",
+        fname:"abdullah",
+        lname:"alhamad",
+        table_id:"1"
+    },
+    {
+        id:"2",
+        fname:"muhamad",
+        lname:"mardud",
+        table_id:"2"
+    },
+    {
+        id:"3",
+        fname:"ahmet",
+        lname:"ramazan",
+        table_id:"3"
+    },
+]
+
 const tables =[
     {
         id:"1",
         name:"salon",
         category_id:"1",
+        user_id:"1"
     },
     {
         id:"2",
         name:"salon",
         category_id:"1",
+        user_id:"1"
     },
     {
         id:"3",
         name:"salon",
         category_id:"2",
+        user_id:"1"
     },
     {
         id:"4",
         name:"salon",
         category_id:"3",
+        user_id:"2"
     },
     {
         id:"5",
         name:"salon",
         category_id:"3",
+        user_id:"3"
     },
 ];
 
@@ -43,7 +69,7 @@ const categories =[
         table_id:"3"
     },
     {
-        id: "3",
+        id: "4",
         name: "Grills",
         table_id:"4"
     },
@@ -93,4 +119,4 @@ const comments =[
     }
 ]
 
-module.exports = {categories, foods , comments, tables}
+module.exports = {categories, foods , comments, tables, users}
