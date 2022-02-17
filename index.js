@@ -21,6 +21,11 @@ const typeDefs = gql`
     fname: String
     table_id: ID
   }
+  input updateUser {
+    lname: String
+    fname: String
+    table_id: ID
+  }
 
 
   #tables
@@ -33,6 +38,11 @@ const typeDefs = gql`
   }
   input createTable{
     name:String!
+    user_id: ID
+    category_id: ID
+  }
+  input updateTable{
+    name:String
     user_id: ID
     category_id: ID
   }
@@ -50,6 +60,10 @@ const typeDefs = gql`
     name: String!
     table_id: ID!
   }
+  input updateCategory {
+    name: String
+    table_id: ID
+  }
 
 
   #foods
@@ -64,6 +78,10 @@ const typeDefs = gql`
     name:String!
     category_id:ID!
   }
+  input updateFood{
+    name:String
+    category_id:ID
+  }
 
   #comments
   type comments {
@@ -74,6 +92,14 @@ const typeDefs = gql`
   input createComment{
     text:String!
     food_id:ID!
+  }
+  input updateComment{
+    text:String
+    food_id:ID
+  }
+
+  type DeleteAllOutput{
+    count: Int!
   }
 
   type Query {
@@ -100,18 +126,33 @@ const typeDefs = gql`
   type Mutation {
     #users
     createUser(data: createUser!): users!
+    updateUser(id: ID!, data: updateUser!): users!
+    deleteUser(id: ID!): users!
+    deleteAllUsers: DeleteAllOutput!
 
     #tables
     createTable(data: createTable!): tables!
+    updateTable(id: ID!, data: updateTable!): tables!
+    deleteTable(id: ID!): tables!
+    deleteAllTables: DeleteAllOutput!
 
     #categories
     createCategory(data: createCategory!): categories!
+    updateCategory(id: ID!, data: updateCategory!): categories!
+    deleteCategory(id: ID!): categories!
+    deleteAllCategories: DeleteAllOutput!
 
     #foods
     createFood(data: createFood!): foods!
+    updateFood(id: ID!, data: updateFood!): foods!
+    deleteFood(id: ID!): foods!
+    deleteAllFoods: DeleteAllOutput!
     
     #comments
     createComment(data: createComment!): comments!
+    updateComment(id: ID!, data: updateComment!): comments!
+    deleteComment(id: ID!): comments!
+    deleteAllComments: DeleteAllOutput!
   }
 `;
 
@@ -128,7 +169,38 @@ const resolvers = {
 
       return user;
     },
+    updateUser: (parent, { id, data }) => {
+      const user_index = users.findIndex((user) => user.id === id);
 
+      if (user_index === -1) {
+        throw new Error("User not found.");
+      }
+
+      const updatedUser = (users[user_index] = {
+        ...users[user_index],
+        ...data,
+      });
+
+      return updatedUser;
+    },
+    deleteUser: (parent, { id }) => {
+      const user_index = users.findIndex((user) => user.id === id);
+
+      if (user_index === -1) {
+        throw new Error("User not found.");
+      }
+
+      const deletedUser = users[user_index];
+      users.splice(user_index, 1);
+      return deletedUser;
+    },
+    deleteAllUsers: () => {
+      const length = users.length;
+      users.splice(0,length);
+      return {
+        count: length,
+      };
+    },
     //taples
     createTable:(parent,{data})=> {
       const table = {
@@ -138,6 +210,38 @@ const resolvers = {
       tables.push(table);
 
       return table;
+    },
+    updateTable:(parent,{id,data})=>{
+      const table_index = tables.findIndex((table)=>table.id === id);
+
+      if(table_index === -1){
+        throw new Error("Table not found.");
+      }
+
+      const updatedTable = (tables[table_index] = {
+        ...tables[table_index],
+        ...data
+      });
+
+      return updatedTable;
+    },
+    deleteTable:(parent,{id})=>{
+      const table_index = tables.findIndex((table)=>table.id === id);
+
+      if(table_index === -1){
+        throw new Error("Table not found.");
+      }
+
+      const deletedTable = tables[table_index];
+      tables.splice(table_index,1);
+      return deletedTable;
+    },
+    deleteAllTables:()=>{
+      const length = tables.length;
+      tables.splice(0,length);
+      return {
+        count:length
+      }
     },
 
     //categories
@@ -151,6 +255,41 @@ const resolvers = {
 
       return category;
     },
+    updateCategory: (parent,{id,data}) => {
+      const category_index = categories.findIndex((category)=>category.id === id);
+
+      if(category_index === -1){
+        throw new Error("Category not found.");
+      }
+
+      const updatedCategory = (categories[category_index] = {
+        ...categories[category_index],
+        ...data
+      });
+
+      return updatedCategory;
+    },
+    deleteCategory: (parent,{id}) => {
+      const category_index = categories.findIndex((category)=>category.id === id);
+
+      if(category_index === -1){
+        throw new Error("Category not found.");
+      }
+
+      const deletedCategory = categories[category_index];
+      
+      categories.splice(category_index,1);
+      
+      return deletedCategory;
+    },
+    deleteAllCategories:()=>{
+      const length = categories.length;
+      categories.splice(0,length);
+      return {
+        count:length
+      }
+    },
+
     //foods
     createFood: (parent,{data}) => {
       const food = {
@@ -161,7 +300,38 @@ const resolvers = {
 
       return food;
     },
+    updateFood: (parent,{id,data}) => {
+      const food_index = foods.findIndex((food)=>food.id === id);
 
+      if(food_index === -1){
+        throw new Error("Food not found.");
+      }
+
+      const updatedFood = (foods[food_index] = {
+        ...foods[food_index],
+        ...data
+      });
+
+      return updatedFood;
+    },
+    deleteFood: (parent,{id}) => {
+      const food_index = foods.findIndex((food)=>food.id === id);
+
+      if(food_index === -1){
+        throw new Error("Food not found.");
+      }
+
+      const deletedFood = foods[food_index];
+      foods.splice(food_index,1);
+      return deletedFood;
+    },
+    deleteAllFoods:()=>{
+      const length = foods.length;
+      foods.splice(0,length);
+      return {
+        count:length
+      }
+    },
     //createComment
     createComment: (parent,{data}) => {
       const comment = {
@@ -173,8 +343,40 @@ const resolvers = {
 
       return comment;
     },
-  },
+    updateComment: (parent,{id,data}) => {
+      const comment_index = comments.findIndex((comment)=>comment.id === id);
 
+      if(comment_index === -1){
+        throw new Error("Comment not found.");
+      }
+
+      const updatedComment = (comments[comment_index] = {
+        ...comments[comment_index],
+        ...data
+      });
+
+      return updatedComment;
+    },
+    deleteComment: (parent,{id}) => {
+      const comment_index = comments.findIndex((comment)=>comment.id === id);
+
+      if(comment_index === -1){
+        throw new Error("Comment not found.");
+      }
+
+      const deletedComment = comments[comment_index];
+      comments.splice(comment_index,1);
+      return deletedComment;
+    },
+    deleteAllComments:()=>{
+      const length = comments.length;
+      comments.splice(0,length);
+      return {
+        count:length
+      }
+    },
+  },
+  
   
   
   Query: {
